@@ -27,10 +27,24 @@ app.get('/tareas/:id', async function(peticion, respuesta) {
 })
 
 app.post('/tareas', async function(peticion, respuesta) {
-  
+  const texto = peticion.body.texto // lees el texto de la tarea nueva
+  const nuevaTarea = {
+    id: tareas.length+1,
+    texto: texto,
+    completada: false,
+  } //crea objeto con id nuevo
+  tareas.push(nuevaTarea) //lo añade al array
+  respuesta.json(nuevaTarea)
 })
 app.delete('/tareas/:id', async function(peticion, respuesta) {
-  
+  const id = peticion.params.id
+  const indice = tareas.findIndex(t=>t.id === Number(id))
+  if(indice === -1) {  // findIndex devuelve -1 si no encuentra nada
+  respuesta.status(404).json({ error: 'Tarea no encontrada' })
+  return
+}
+  tareas.splice(indice, 1)
+  respuesta.json({ mensaje: 'Tarea eliminada correctamente' })
 })
 
 app.listen(3000, function() {
